@@ -2,14 +2,20 @@ package com.dheepak.giphytrending.common.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.dheepak.giphytrending.R
 import com.dheepak.giphytrending.common.model.DataItem
 import kotlinx.android.synthetic.main.trending_gifs_holder.view.*
@@ -29,8 +35,32 @@ class TrendingGifsListAdapter(private val onclick: OnCLick?,
         }
         Glide.with(holder.itemView.context)
             .load(Uri.parse(getItem(position)?.images?.previewGif?.url))
-            .placeholder(R.drawable.ic_launcher_foreground)
             .centerCrop()
+            .listener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    p0: GlideException?,
+                    p1: Any?,
+                    p2: Target<Drawable>?,
+                    p3: Boolean
+                ): Boolean {
+                    holder.itemView.favorite.visibility = View.VISIBLE
+                    holder.itemView.progressBar.visibility = View.GONE
+                    return false
+                }
+
+                override fun onResourceReady(
+                    p0: Drawable?,
+                    p1: Any?,
+                    p2: Target<Drawable>?,
+                    p3: DataSource?,
+                    p4: Boolean
+                ): Boolean {
+                    holder.itemView.favorite.visibility = View.VISIBLE
+                    holder.itemView.progressBar.visibility = View.GONE
+                    return false
+                }
+
+            })
             .into(holder.itemView.gif_image)
         holder.itemView.favorite.setOnClickListener {
             onclick?.performOperationForFavoriteClick(item!!)
