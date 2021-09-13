@@ -7,4 +7,7 @@ import retrofit2.http.Query
 interface NetworkService {
     @GET("trending?api_key=o4W7p9GgvVz4CtQNh7HrIg8V1wYWydMb")
     suspend fun getTrendingGifs(@Query("offset") offset: Int): Response<com.dheepak.giphytrending.common.model.ApiResponse>
+
+    @GET("search?api_key=o4W7p9GgvVz4CtQNh7HrIg8V1wYWydMb")
+    suspend fun getSearchGifs(@Query("q") search: String): Response<com.dheepak.giphytrending.common.model.ApiResponse>
 }

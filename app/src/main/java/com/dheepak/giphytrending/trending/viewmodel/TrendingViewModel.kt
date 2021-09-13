@@ -1,11 +1,10 @@
 package com.dheepak.giphytrending.trending.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import androidx.paging.liveData
 import com.dheepak.giphytrending.trending.domain.TrendingRepository
 import com.dheepak.giphytrending.common.model.DataItem
 import kotlinx.coroutines.Dispatchers
@@ -28,5 +27,21 @@ class TrendingViewModel(private val trendingRepository: TrendingRepository): Vie
     }
 
     fun favoritesData(): LiveData<List<DataItem>> = trendingRepository.getFavorites()
+
+    private val searchTextLiveData = MutableLiveData<String>()
+
+    fun actionSearch(text: String) {
+        searchTextLiveData.value = text
+    }
+
+    private val searchResult = Transformations.map(searchTextLiveData) {
+        trendingRepository.getSearchGifs(it)
+    }
+
+    fun searchGifsData() = Transformations.switchMap(searchResult) {
+        Pager(PagingConfig(25)) {
+            it
+        }.liveData
+    }
 
 }
