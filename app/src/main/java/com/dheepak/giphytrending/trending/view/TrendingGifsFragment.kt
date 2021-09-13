@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dheepak.giphytrending.R
 import com.dheepak.giphytrending.common.adapter.TrendingGifsListAdapter
 import com.dheepak.giphytrending.common.model.DataItem
 import com.dheepak.giphytrending.trending.viewmodel.TrendingViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_trending_gifs.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class TrendingGifsFragment : Fragment() {
@@ -36,11 +40,23 @@ class TrendingGifsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter()
-        setupRecyclerView()
+        setupTrendingRecyclerView()
         setupDataFlow()
         setupFavorites()
         setupSearchView()
         setupRefresh()
+        setupNetworkRequestLoaders()
+    }
+
+    private fun setupNetworkRequestLoaders() {
+        lifecycleScope.launch {
+            trendingGifsListAdapter.loadStateFlow.collectLatest { loadStates ->
+                trending_progress.isVisible = loadStates.refresh is LoadState.Loading
+                if(loadStates.refresh is LoadState.Error) {
+                    Snackbar.make(requireView(),"something went wrong, Check your network",Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun setupRefresh() {
@@ -61,32 +77,12 @@ class TrendingGifsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 searchJob?.cancel()
                 if (newText?.isEmpty()!!) {
-                    trending_list_view.apply {
-                        val gridSpanCount =
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                                2
-                            } else {
-                                4
-                            }
-                        layoutManager = GridLayoutManager(context, gridSpanCount)
-                        setHasFixedSize(true)
-                        adapter = trendingGifsListAdapter
-                    }
+                    setupTrendingRecyclerView()
                 } else {
                     searchJob = coroutineScope.launch {
                         delay(500)
                         lifecycleScope.launch {
-                            trending_list_view.apply {
-                                val gridSpanCount =
-                                    if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                                        2
-                                    } else {
-                                        4
-                                    }
-                                layoutManager = GridLayoutManager(context, gridSpanCount)
-                                setHasFixedSize(true)
-                                adapter = searchGifsListAdapter
-                            }
+                            setupSearchRecyclerView()
                             trendingViewModel.actionSearch(newText)
                         }
                     }
@@ -119,7 +115,7 @@ class TrendingGifsFragment : Fragment() {
         })
     }
 
-    private fun setupRecyclerView() {
+    private fun setupTrendingRecyclerView() {
         trending_list_view.apply {
             val gridSpanCount =
                 if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -130,6 +126,20 @@ class TrendingGifsFragment : Fragment() {
             layoutManager = GridLayoutManager(context, gridSpanCount)
             setHasFixedSize(true)
             adapter = trendingGifsListAdapter
+        }
+    }
+
+    private fun setupSearchRecyclerView() {
+        trending_list_view.apply {
+            val gridSpanCount =
+                if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    2
+                } else {
+                    4
+                }
+            layoutManager = GridLayoutManager(context, gridSpanCount)
+            setHasFixedSize(true)
+            adapter = searchGifsListAdapter
         }
     }
 
