@@ -2,6 +2,7 @@ package com.dheepak.giphytrending
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingSource
+import com.dheepak.giphytrending.common.db.GiphyDao
 import com.dheepak.giphytrending.trending.domain.NetworkService
 import com.dheepak.giphytrending.trending.domain.TrendingRepository
 import com.dheepak.giphytrending.trending.domain.TrendingRepositoryImpl
@@ -29,13 +30,14 @@ class TrendingRepositoriesTest {
     private val testDispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 
     var api: NetworkService = mockk()
+    var giphyDao: GiphyDao = mockk()
 
     lateinit var trendingRepository: TrendingRepository
 
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        trendingRepository = TrendingRepositoryImpl(api)
+        trendingRepository = TrendingRepositoryImpl(api,giphyDao)
         Dispatchers.setMain(testDispatcher)
     }
 
