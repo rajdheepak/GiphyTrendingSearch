@@ -20,6 +20,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class GifFavortiesFragment : Fragment() {
 
     private val favoritesViewmodel: FavoritesViewmodel by viewModel()
+    private lateinit var trendingGifsListAdapter: TrendingGifsListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,12 +32,12 @@ class GifFavortiesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val trendingGifsListAdapter = TrendingGifsListAdapter(object : TrendingGifsListAdapter.OnCLick{
-            override fun performOperationForFavoriteClick(dataItem: DataItem) {
-                favoritesViewmodel.deleteFromFavorites(dataItem.id)
-            }
+        setupAdapter()
+        setupList()
+        setupDataFlow()
+    }
 
-        },true)
+    private fun setupList() {
         favorites_list_view.apply {
             val gridSpanCount = if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 2
@@ -47,11 +48,23 @@ class GifFavortiesFragment : Fragment() {
             setHasFixedSize(true)
             adapter = trendingGifsListAdapter
         }
+    }
+
+    private fun setupDataFlow() {
         lifecycleScope.launch {
             favoritesViewmodel.getFavorites().collect {
                 trendingGifsListAdapter.submitData(it)
             }
         }
+    }
+
+    private fun setupAdapter() {
+        trendingGifsListAdapter = TrendingGifsListAdapter(object : TrendingGifsListAdapter.OnCLick{
+            override fun performOperationForFavoriteClick(dataItem: DataItem) {
+                favoritesViewmodel.deleteFromFavorites(dataItem.id)
+            }
+
+        },true)
     }
 
 }
