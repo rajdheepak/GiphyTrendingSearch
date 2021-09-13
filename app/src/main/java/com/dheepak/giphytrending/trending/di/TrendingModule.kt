@@ -1,9 +1,9 @@
-package com.dheepak.giphytrending.di
+package com.dheepak.giphytrending.trending.di
 
-import com.dheepak.giphytrending.domain.NetworkService
-import com.dheepak.giphytrending.domain.TrendingRepository
-import com.dheepak.giphytrending.domain.TrendingRepositoryImpl
-import com.dheepak.giphytrending.viewmodel.TrendingViewModel
+import com.dheepak.giphytrending.trending.domain.NetworkService
+import com.dheepak.giphytrending.trending.domain.TrendingRepository
+import com.dheepak.giphytrending.trending.domain.TrendingRepositoryImpl
+import com.dheepak.giphytrending.trending.viewmodel.TrendingViewModel
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -17,7 +17,7 @@ val trendingModule = module{
 
     viewModel { TrendingViewModel(get()) }
 
-    single<TrendingRepository> { TrendingRepositoryImpl(get()) }
+    single<TrendingRepository> { TrendingRepositoryImpl(get(),get()) }
 
     single<NetworkService> {
         Retrofit.Builder()

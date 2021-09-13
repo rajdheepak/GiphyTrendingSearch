@@ -1,9 +1,11 @@
-package com.dheepak.giphytrending.domain
+package com.dheepak.giphytrending.trending.domain
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
-import com.dheepak.giphytrending.model.DataItem
+import com.dheepak.giphytrending.common.db.GiphyDao
+import com.dheepak.giphytrending.common.model.DataItem
 
-class TrendingRepositoryImpl(private val networkService: NetworkService): TrendingRepository {
+class TrendingRepositoryImpl(private val networkService: NetworkService, private val giphyDao: GiphyDao): TrendingRepository {
 
     override fun getTrendingGifs(): PagingSource<Int, DataItem> {
         return object : PagingSource<Int, DataItem>() {
@@ -32,5 +34,21 @@ class TrendingRepositoryImpl(private val networkService: NetworkService): Trendi
             }
 
         }
+    }
+
+    override fun addToFavorites(dataItem: DataItem) {
+        giphyDao.addFavorite(dataItem)
+    }
+
+    override fun getFavorites(): LiveData<List<DataItem>> {
+        return giphyDao.getFavoritesGifsAsLiveData()
+    }
+
+    override fun getFavoritesList(): List<DataItem> {
+        return giphyDao.getFavoritesGifsData()
+    }
+
+    override fun deleteFromFavorites(id: String) {
+        giphyDao.deleteFavorite(id)
     }
 }

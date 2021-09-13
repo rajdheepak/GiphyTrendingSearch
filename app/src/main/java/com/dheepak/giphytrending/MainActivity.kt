@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.dheepak.giphytrending.view.TrendingGifsFragment
+import com.dheepak.giphytrending.favorites.view.GifFavortiesFragment
+import com.dheepak.giphytrending.trending.view.TrendingGifsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

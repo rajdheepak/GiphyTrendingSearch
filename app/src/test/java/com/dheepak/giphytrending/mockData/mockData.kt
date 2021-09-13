@@ -1,6 +1,6 @@
 package com.dheepak.giphytrending.mockData
 
-import com.dheepak.giphytrending.model.ApiResponse
+import com.dheepak.giphytrending.common.model.ApiResponse
 import com.google.gson.Gson
 import java.io.File
 

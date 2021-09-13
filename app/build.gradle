@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -67,5 +68,10 @@ dependencies {
     testImplementation 'com.google.code.gson:gson:2.8.6'
     testImplementation 'androidx.test.ext:junit:1.1.2-alpha03'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
+
+    //room
+    implementation "androidx.room:room-runtime:2.3.0" //room
+    kapt "androidx.room:room-compiler:2.3.0"
+    implementation "androidx.paging:paging-runtime:2.3.0"
 
 }

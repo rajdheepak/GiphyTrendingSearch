@@ -1,4 +1,4 @@
-package com.dheepak.giphytrending.view
+package com.dheepak.giphytrending.trending.view
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dheepak.giphytrending.R
-import com.dheepak.giphytrending.view.adapter.TrendingGifsListAdapter
-import com.dheepak.giphytrending.viewmodel.TrendingViewModel
+import com.dheepak.giphytrending.common.model.DataItem
+import com.dheepak.giphytrending.common.adapter.TrendingGifsListAdapter
+import com.dheepak.giphytrending.trending.viewmodel.TrendingViewModel
 import kotlinx.android.synthetic.main.fragment_trending_gifs.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,10 +34,22 @@ class TrendingGifsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupDataFlow()
+        setupFavorites()
+    }
+
+    private fun setupFavorites() {
+        trendingViewModel.favoritesData().observe(viewLifecycleOwner, {
+            trendingGifsListAdapter.updateFavorites(it)
+        })
     }
 
     private fun setupRecyclerView() {
-        trendingGifsListAdapter = TrendingGifsListAdapter()
+        trendingGifsListAdapter = TrendingGifsListAdapter(object : TrendingGifsListAdapter.OnCLick{
+            override fun performOperationForFavoriteClick(dataItem: DataItem) {
+                trendingViewModel.performFavoriteAction(dataItem)
+            }
+
+        })
         trending_list_view.apply {
             val gridSpanCount = if(resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 2

@@ -1,5 +1,8 @@
-package com.dheepak.giphytrending.model
+package com.dheepak.giphytrending.common.model
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import com.google.gson.annotations.SerializedName
 import com.squareup.moshi.Json
 
 data class ApiResponse(
@@ -26,48 +29,48 @@ data class Pagination(
 	val count: Int? = null
 )
 
+@Entity(tableName = "gifTable", primaryKeys = ["id"])
 data class DataItem(
 
+	@Embedded
+	@SerializedName("images")
 	@Json(name="images")
-	val images: Images? = null,
+	val images: Images,
 
+	@SerializedName("embed_url")
 	@Json(name="embed_url")
-	val embedUrl: String? = null,
+	val embedUrl: String = "",
 
+	@SerializedName("bitly_url")
 	@Json(name="bitly_url")
-	val bitlyUrl: String? = null,
+	val bitlyUrl: String = "",
 
+	@SerializedName("type")
 	@Json(name="type")
-	val type: String? = null,
+	val type: String = "",
 
+	@SerializedName("bitly_gif_url")
 	@Json(name="bitly_gif_url")
-	val bitlyGifUrl: String? = null,
+	val bitlyGifUrl: String = "",
 
-	@Json(name="url")
-	val url: String? = null,
-
+	@SerializedName("id")
 	@Json(name="id")
-	val id: String? = null
+	val id: String
 )
 
+@Entity
 data class Images(
+	@Embedded
+	@SerializedName("preview_gif")
 	@Json(name="preview_gif")
-	val previewGif: PreviewGif? = null
+	val previewGif: PreviewGif
 )
 
+@Entity
 data class PreviewGif(
-
-	@Json(name="size")
-	val size: String? = null,
-
-	@Json(name="width")
-	val width: String? = null,
-
+	@SerializedName("gif_url")
 	@Json(name="url")
-	val url: String? = null,
-
-	@Json(name="height")
-	val height: String? = null
+	val url: String,
 )
 
 data class Meta(

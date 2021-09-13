@@ -2,9 +2,9 @@ package com.dheepak.giphytrending
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingSource
-import com.dheepak.giphytrending.domain.NetworkService
-import com.dheepak.giphytrending.domain.TrendingRepository
-import com.dheepak.giphytrending.domain.TrendingRepositoryImpl
+import com.dheepak.giphytrending.trending.domain.NetworkService
+import com.dheepak.giphytrending.trending.domain.TrendingRepository
+import com.dheepak.giphytrending.trending.domain.TrendingRepositoryImpl
 import com.dheepak.giphytrending.mockData.dummyResponse
 import io.mockk.coEvery
 import io.mockk.mockk

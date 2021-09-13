@@ -1,7 +1,8 @@
 package com.dheepak.giphytrending
 
 import android.app.Application
-import com.dheepak.giphytrending.di.trendingModule
+import com.dheepak.giphytrending.trending.di.trendingModule
+import com.dheepak.giphytrending.favorites.di.favoritesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -10,7 +11,7 @@ class MainApplication: Application() {
         super.onCreate()
         startKoin {
             androidContext(applicationContext)
-            modules(trendingModule)
+            modules(listOf(trendingModule, favoritesModule))
         }
     }
 }
